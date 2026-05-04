@@ -961,7 +961,7 @@ function ContactSection() {
                 <p className="text-sm font-semibold text-accent-brand group-hover:underline">
                   Download My Resume
                 </p>
-                <p className="text-xs text-muted-foreground">PDF • Updated 2024</p>
+                <p className="text-xs text-muted-foreground">PDF • Updated {new Date().getFullYear()}</p>
               </div>
             </a>
           </div>
@@ -1065,7 +1065,7 @@ function Footer() {
           <p className="text-xs text-muted-foreground text-center">
             Designed &amp; Built by{" "}
             <span className="text-accent-brand font-medium">
-              Korkoe Dumashie
+              Korkoe Dumashie {new Date().getFullYear()}
             </span>
           </p>
 
