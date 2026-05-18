@@ -46,6 +46,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
 
 /* ──────────── Data ──────────── */
 
@@ -648,7 +655,7 @@ function AboutSection() {
             </p>
             <p>
               I specialize in the <strong className="text-foreground">React</strong> and{" "}
-              <strong className="text-foreground">Laravel</strong> ecosystems, building 
+              <strong className="text-foreground">Laravel</strong> {" "}ecosystems, building 
               full-stack applications ranging from fintech payment systems to healthcare 
               management platforms. Currently, I&apos;m building and maintaining HRM and 
               payment solutions at{" "}
@@ -857,8 +864,24 @@ function ContactSection() {
   });
   const [sending, setSending] = useState(false);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    const result = contactSchema.safeParse(formData);
+
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((err) => {
+        const field = err.path[0];
+        if (typeof field === "string") fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setSending(true);
 
     try {
@@ -972,36 +995,51 @@ function ContactSection() {
               <Input
                 placeholder="Your Name"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
-                className="bg-card border-border focus:border-accent-brand"
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (errors.name) setErrors({ ...errors, name: "" });
+                }}
+                className={`bg-card border-border focus:border-accent-brand ${
+                  errors.name ? "border-red-500" : ""
+                }`}
               />
+              {errors.name && (
+                <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+              )}
             </div>
             <div>
               <Input
                 type="email"
                 placeholder="Your Email"
                 value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-                className="bg-card border-border focus:border-accent-brand"
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (errors.email) setErrors({ ...errors, email: "" });
+                }}
+                className={`bg-card border-border focus:border-accent-brand ${
+                  errors.email ? "border-red-500" : ""
+                }`}
               />
+              {errors.email && (
+                <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+              )}
             </div>
             <div>
               <Textarea
                 placeholder="Your Message"
                 rows={6}
                 value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                required
-                className="bg-card border-border focus:border-accent-brand resize-none"
+                onChange={(e) => {
+                  setFormData({ ...formData, message: e.target.value });
+                  if (errors.message) setErrors({ ...errors, message: "" });
+                }}
+                className={`bg-card border-border focus:border-accent-brand resize-none ${
+                  errors.message ? "border-red-500" : ""
+                }`}
               />
+              {errors.message && (
+                <p className="text-xs text-red-500 mt-1">{errors.message}</p>
+              )}
             </div>
             <Button
               type="submit"
