@@ -931,7 +931,7 @@ function ContactSection() {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact info */}
           <div className="space-y-6">
-            <a
+            {/* <a
               href="mailto:dumashiekorkoe@gmail.com"
               className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent-brand/30 transition-colors group"
             >
@@ -959,7 +959,7 @@ function ContactSection() {
                   +233 50 109 3481
                 </p>
               </div>
-            </a>
+            </a> */}
 
             <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
               <div className="w-12 h-12 rounded-lg bg-accent-brand/10 flex items-center justify-center">
